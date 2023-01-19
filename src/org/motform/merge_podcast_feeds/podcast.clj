@@ -38,7 +38,7 @@
       [:link "https://radio.alltatalla.se/"]]
      ["itunes:category" {:text "News"}
       ["itunes:category" {:text "Politics"}]]
-     ["itunes:category" {:text "Society &amp; Culture"}
+     ["itunes:category" {:text "Society & Culture"}
       ["itunes:category" {:text "News Commentary"}]]
      ["itunes:category" {:text "Government"}
       ["itunes:category" {:text "Non-profit"}]]

@@ -1,5 +1,4 @@
 (ns org.motform.merge-podcast-feeds.core
-  "TODO: Sort by date!"
   (:require [clojure.data.xml :as xml]
             [clojure.data.zip.xml :as zip-xml]
             [clojure.java.io :as io]
@@ -11,8 +10,8 @@
 (defn parse-xml-feed [feed-url] ; TODO: Wrap this in `with-open`?
   (-> feed-url io/input-stream xml/parse))
 
-(defn items [xml-zip]
-  (map zip/node (zip-xml/xml-> xml-zip :channel :item)))
+(defn episodes [xml]
+  (map zip/node (zip-xml/xml-> (zip/xml-zip xml) :channel :item)))
 
 (defn zip-from-root-to-episode-insertion
   "Goes from the root of `xml-zip`, assumed to be <channel>
@@ -37,7 +36,7 @@
     (xml/emit xml output-file)))
 
 (defn publication-date 
-  "Returns the podcast item `:pubDate`, a string in RFC-1123 format."
+  "Return the podcast item `:pubDate`, a string in RFC-1123 format."
   [item]
   (-> (zip/xml-zip item)
       (zip-xml/xml1-> :pubDate)
@@ -51,10 +50,9 @@
 (def feeds
   (->> ["https://pod.alltatalla.se/@rekreation/feed.xml"
         "https://pod.alltatalla.se/@omvarldar/feed.xml"]
-       (map (comp items zip/xml-zip parse-xml-feed))
+       (map (comp episodes parse-xml-feed))
        (apply concat)
-       (sort-by (comp parse-RFC1123-date publication-date))
-       (reverse)))
+       (sort-by (comp parse-RFC1123-date publication-date))))
 
 (comment
   (require '[clojure.inspector :as inspect])
