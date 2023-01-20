@@ -9,11 +9,12 @@
   "Read json config and emit a test merge under `resources/xml/text.xml`.
   Can be run from the command line using `clj -X:test-merge` {:config path-to-config}"
   [{json-config-path :config}]
-  (let [config   (config/parse-json-config json-config-path)
-        feeds    (-> config :json/feeds xml/collect-and-sort-feeds)
-        metadata (podcast/preamble-&-metadata (date/RFC1123-now))
+  (let [config      (config/parse-json-config json-config-path)
+        feeds       (-> config :json/feeds xml/collect-and-sort-feeds)
+        metadata    (podcast/preamble-&-metadata (date/RFC1123-now))
         output-feed (xml/append-podcast-feeds metadata feeds)]
-    (xml/emit-test-xml output-feed)))
+    (xml/emit-test-xml output-feed)
+    :ok!))
 
 (defn -main
   "This will be the main entry point, tba."
@@ -22,6 +23,6 @@
 (comment
   (test-merge {:config "resources/json/example_config.json"})
 
-  (-> "resources/json/example_config.json" json/parse-json-config)
+  (config/parse-json-config "resources/json/example_config.json")
   :end)
 
