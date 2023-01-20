@@ -1,5 +1,7 @@
 (ns org.motform.merge-podcast-feeds.podcast
-  (:require [clojure.data.xml :as xml]))
+  (:require [clojure.data.xml :as xml]
+            [clojure.string :as str]
+            [clojure.spec.alpha :as s]))
 
 ;; This should perhaps be populated by some json or xml-file that we eat.
 (defn preamble-&-metadata

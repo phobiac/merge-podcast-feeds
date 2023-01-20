@@ -2,5 +2,8 @@
 	"feeds": [
 		"https://pod.alltatalla.se/@rekreation/feed.xml",
 		"https://pod.alltatalla.se/@omvarldar/feed.xml"
-	]
+	],
+	"nested": {
+		"object": "keys"
+	}
 }
