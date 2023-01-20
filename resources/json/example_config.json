@@ -3,7 +3,42 @@
 		"https://pod.alltatalla.se/@rekreation/feed.xml",
 		"https://pod.alltatalla.se/@omvarldar/feed.xml"
 	],
-	"nested": {
-		"object": "keys"
+	"metadata": {
+		"title": "Radio åt alla",
+		"link": "https://radio.alltatalla.se/",
+		"description": "Spretig radio från Förbundet Allt åt alla",
+		"language": "sv-SE",
+		"copyright": "kopimi Allt åt alla",
+		"image": {
+			"url": "https://radio.alltatalla.se/wp-content/uploads/2017/05/logo.png",
+			"title": "Radio åt alla",
+			"link": "https://radio.alltatalla.se/"
+		},
+		"atom:link": {
+			"href": "https://radio.alltatalla.se/feed/podcast",
+			"rel": "self",
+			"type": "application/rss+xml"
+		},
+		"itunes": {
+			"author": "Förbundet Allt åt alla",
+			"categories": [
+				["News", "Politics"],
+				["News", "News Commentary"],
+				["Government"],
+				["Business", "Non-Profit"],
+				["Society &amp; Culture", "Philosophy"]
+			],
+			"explicit": "clean",
+			"image": {
+				"href": "https://radio.alltatalla.se/wp-content/uploads/2017/05/logo.png"
+			},
+			"owner": {
+				"name": "Radio åt alla",
+				"email": "web@alltatalla.se"
+			},
+			"type": "serial",
+			"subtitle": "Spretig radio från Förbundet Allt åt alla",
+			"summary": "Spretig radio från Förbundet Allt åt alla"
+		}
 	}
 }

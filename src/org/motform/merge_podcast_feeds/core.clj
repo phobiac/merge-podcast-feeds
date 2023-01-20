@@ -10,7 +10,7 @@
   Can be run from the command line using `clj -X:test-merge` {:config path-to-config}"
   [{json-config-path :config}]
   (let [config      (config/parse-json-config json-config-path)
-        feeds       (-> config :json/feeds xml/collect-and-sort-feeds)
+        feeds       (-> config :config/feeds xml/collect-and-sort-feeds)
         metadata    (podcast/preamble-&-metadata (date/RFC1123-now))
         output-feed (xml/append-podcast-feeds metadata feeds)]
     (xml/emit-test-xml output-feed)

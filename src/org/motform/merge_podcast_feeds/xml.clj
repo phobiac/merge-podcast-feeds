@@ -2,7 +2,6 @@
   (:require [clojure.data.xml     :as xml]
             [clojure.data.zip.xml :as zip-xml]
             [clojure.java.io      :as io]
-            [clojure.spec.alpha   :as s]
             [clojure.zip          :as zip]
             [org.motform.merge-podcast-feeds.date :as date]))
 
@@ -42,7 +41,6 @@
 (defn collect-and-sort-feeds
   "Return seq of <item> nodes from feed urls in `feeds`."
   [feeds]
-  {:pre [(s/valid? :json/feeds feeds)]}
   (->> feeds
        (map (comp episodes parse-xml-feed))
        (apply concat)
