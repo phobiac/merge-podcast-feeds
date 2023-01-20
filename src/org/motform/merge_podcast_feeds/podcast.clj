@@ -2,7 +2,9 @@
   (:require [clojure.data.xml :as xml]))
 
 ;; This should perhaps be populated by some json or xml-file that we eat.
-(def header
+(defn preamble-&-metadata
+  "TODO: This should read from a configuration file."
+  [build-date]
   (xml/sexp-as-element
    [:rss
     {"version" "2.0"
@@ -21,7 +23,7 @@
                    :type "application/rss+xml"}]
      [:link "https://radio.alltatalla.se/"]
      [:description "Spretig radio från Förbundet Allt åt alla"]
-     [:lastBuildDate "Wed, 18 Jan 2023 23:00:00 +0000"] ; TODO
+     [:lastBuildDate build-date]
      [:language "sv-SE"]
      [:copyright "kopimi Allt åt alla"]
      ["itunes:subtitle" "Spretig radio från Förbundet Allt åt alla"]

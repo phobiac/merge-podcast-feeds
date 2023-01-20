@@ -5,7 +5,7 @@
     <atom:link href="https://radio.alltatalla.se/feed/podcast" rel="self" type="application/rss+xml"/>
     <link>https://radio.alltatalla.se/</link>
     <description>Spretig radio från Förbundet Allt åt alla</description>
-    <lastBuildDate>Wed, 18 Jan 2023 23:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 20 Jan 2023 08:05:57 +0100</lastBuildDate>
     <language>sv-SE</language>
     <copyright>kopimi Allt åt alla</copyright>
     <itunes:subtitle>Spretig radio från Förbundet Allt åt alla</itunes:subtitle>
@@ -127,7 +127,7 @@
       <itunes:episodeType>full</itunes:episodeType>
       <podcast:comments uri="https://pod.alltatalla.se/@rekreation/episodes/rekreation-4-att-alska/comments" contentType="application/podcast-activity+json"/>
     </item>
-    <itunes:category text="Society &amp;amp; Culture">
+    <itunes:category text="Society &amp; Culture">
       <itunes:category text="News Commentary"/>
     </itunes:category>
     <item xmlns:podcast="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
