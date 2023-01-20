@@ -23,3 +23,10 @@ You can hack away code by opening an nrepl Unix socked using:
 ``` bash
 clj -A:dev
 ```
+
+## Usage
+
+Copyright © 2023 [Love Lagerkvist](https://motform.org)
+
+Distributed under the Eclipse Public License, the same as Clojure.
+
