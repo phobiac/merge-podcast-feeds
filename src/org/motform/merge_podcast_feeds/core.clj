@@ -1,5 +1,6 @@
 (ns org.motform.merge-podcast-feeds.core
-  (:require [clojure.data.xml :as xml]
+  (:require [clojure.data.json :as json]
+            [clojure.data.xml :as xml]
             [clojure.data.zip.xml :as zip-xml]
             [clojure.java.io :as io]
             [clojure.zip :as zip]
@@ -65,21 +66,31 @@
         now       (ZonedDateTime/now)]
     (. formatter format now)))
 
+(defn collect-and-sort-feeds
+  ""
+  [feeds]
+  (->> feeds
+       (map (comp episodes parse-xml-feed))
+       (apply concat)
+       (sort-by (comp parse-RFC1123-date publication-date))))
+
+(defn parse-json-config
+  ""
+  [json-path]
+  (-> json-path slurp json/read-str)) ; TODO: Add validation
+
 (comment
   (require '[clojure.inspector :as inspect])
 
-  (def feeds
-    (->> ["https://pod.alltatalla.se/@rekreation/feed.xml"
-          "https://pod.alltatalla.se/@omvarldar/feed.xml"]
-         (map (comp episodes parse-xml-feed))
-         (apply concat)
-         (sort-by (comp parse-RFC1123-date publication-date))))
+;; Test parse and emit
+  (let [feeds (-> "resources/json/example_config.json"
+                  parse-json-config
+                  (get "feeds")
+                  collect-and-sort-feeds)]
+    (-> (podcast/preamble-&-metadata (RFC1123-now))
+        zip/xml-zip
+        zip-from-root-to-episode-insertion
+        (insert-rightmost feeds)
+        zip/root
+        emit-test-xml)))
 
-  ;; Test parse and emit
-  (-> (podcast/preamble-&-metadata (RFC1123-now))
-      zip/xml-zip
-      zip-from-root-to-episode-insertion
-      (insert-rightmost feeds)
-      zip/root
-      emit-test-xml)
-  )
