@@ -23,6 +23,15 @@
 (comment
   (test-merge {:config "resources/json/example_config.json"})
 
+  (let [config      (config/parse-json-config "resources/json/example_config.json")
+        feeds       (xml/collect-and-sort-feeds (:config/feeds config))
+        channel     (podcast/config->hiccup-channel config)
+        xml-no-feed (xml/hiccup-channel->xml-with-pubDate channel)
+        xml         (xml/append-podcast-feeds xml-no-feed feeds)]
+    (println)
+    (clojure.pprint/pprint xml))
+
+
   (config/parse-json-config "resources/json/example_config.json")
   :end)
 

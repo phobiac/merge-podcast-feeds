@@ -6,6 +6,7 @@
 	"metadata": {
 		"title": "Radio åt alla",
 		"link": "https://radio.alltatalla.se/",
+		"atom": "https://radio.alltatalla.se/feed/podcast", 
 		"description": "Spretig radio från Förbundet Allt åt alla",
 		"language": "sv-SE",
 		"copyright": "kopimi Allt åt alla",
@@ -13,11 +14,6 @@
 			"url": "https://radio.alltatalla.se/wp-content/uploads/2017/05/logo.png",
 			"title": "Radio åt alla",
 			"link": "https://radio.alltatalla.se/"
-		},
-		"atom:link": {
-			"href": "https://radio.alltatalla.se/feed/podcast",
-			"rel": "self",
-			"type": "application/rss+xml"
 		},
 		"itunes": {
 			"author": "Förbundet Allt åt alla",
@@ -28,7 +24,7 @@
 				["Business", "Non-Profit"],
 				["Society &amp; Culture", "Philosophy"]
 			],
-			"explicit": "clean",
+			"explicit": "false",
 			"image": {
 				"href": "https://radio.alltatalla.se/wp-content/uploads/2017/05/logo.png"
 			},

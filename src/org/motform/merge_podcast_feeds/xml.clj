@@ -55,6 +55,10 @@
       (insert-rightmost feeds)
       zip/root))
 
+(defn hiccup-channel->xml-with-pubDate [channel]
+  (xml/sexp-as-element
+   [:rss (conj channel [:pubDate (date/RFC1123-now)])]))
+
 (defn emit-test-xml
   "Spit `xml` to resources/xml/test.xml"
   [xml]

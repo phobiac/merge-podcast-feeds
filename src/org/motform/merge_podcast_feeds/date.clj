@@ -9,7 +9,7 @@
     (ZonedDateTime/parse rfc1123-date formatter)))
 
 (defn RFC1123-now
-  "Return string of current now formatted in RFC1123."
+  "Return string current time formatted per RFC1123."
   []
   (let [formatter (DateTimeFormatter/RFC_1123_DATE_TIME)
         now       (ZonedDateTime/now)]

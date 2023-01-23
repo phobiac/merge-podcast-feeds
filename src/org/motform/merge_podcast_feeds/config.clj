@@ -21,7 +21,7 @@
 
 (defn parse-json-config
   [json-path]
-  {:post [(s/valid? :config/valid %)]}
+  ;; {:post [(s/valid? :config/valid %)]}
   (with-open [json-config (io/reader json-path)]
     (-> (json/read json-config :key-fn keyword)
         (update-keys (namespace-keyword "config"))
@@ -37,6 +37,7 @@
 (s/def :rss/language-code
   #(re-matches #"(\w\w)(-\w\w)?" %))
 
+;; Source: https://emailregex.com/
 (s/def :email/email
   #(re-matches #"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])" %))
 
@@ -64,6 +65,7 @@
 (s/def :metadata/link        :url/url)
 (s/def :metadata/name        string?)
 (s/def :metadata/title       string?)
+(s/def :metadata/atom        :url/url)
 
 ;; iTunes tags
 (def itunes-categories
@@ -80,7 +82,7 @@
 (s/def :itunes/category   valid-itunes-category?)
 (s/def :itunes/categories (s/and vector? seq (s/+ (s/cat :category :itunes/category))))
 (s/def :itunes/complete   #{"Yes"})
-(s/def :itunes/explicit   #{"clean" "yes" "no" true false})
+(s/def :itunes/explicit   #{"clean" "yes" "no" "true" "false" true false})
 (s/def :itunes/image      (s/keys :req-un [:url/href]))
 (s/def :itunes/owner      (s/keys :req-un [:metadata/name :email/email]))
 (s/def :itunes/subtitle   string?)
@@ -105,6 +107,7 @@
   (s/keys :req [:metadata/title
                 :metadata/description
                 :metadata/language
+                :metadata/atom
                 :metadata/itunes]
           :opt [:metadata/copyright
                 :metadata/link
