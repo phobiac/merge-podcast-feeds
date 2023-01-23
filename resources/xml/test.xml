@@ -5,10 +5,33 @@
     <atom:link href="https://radio.alltatalla.se/feed/podcast" rel="self" type="application/rss+xml"/>
     <link>https://radio.alltatalla.se/</link>
     <description>Spretig radio från Förbundet Allt åt alla</description>
-    <lastBuildDate>Fri, 20 Jan 2023 14:07:05 +0100</lastBuildDate>
+    <lastBuildDate>Mon, 23 Jan 2023 10:36:39 +0100</lastBuildDate>
     <language>sv-SE</language>
     <copyright>kopimi Allt åt alla</copyright>
     <itunes:subtitle>Spretig radio från Förbundet Allt åt alla</itunes:subtitle>
+    <itunes:author>Förbundet Allt åt alla</itunes:author>
+    <itunes:summary>Spretig radio från Förbundet Allt åt alla</itunes:summary>
+    <itunes:owner>
+      <itunes:name>Radio åt alla</itunes:name>
+      <itunes:email>web@alltatalla.se</itunes:email>
+    </itunes:owner>
+    <itunes:explicit>clean</itunes:explicit>
+    <itunes:image href="https://radio.alltatalla.se/wp-content/uploads/2017/05/logo.png"/>
+    <image>
+      <url>https://radio.alltatalla.se/wp-content/uploads/2017/05/logo.png</url>
+      <title>Radio åt alla</title>
+      <link>https://radio.alltatalla.se/</link>
+    </image>
+    <itunes:category text="News">
+      <itunes:category text="Politics"/>
+    </itunes:category>
+    <itunes:category text="Society &amp; Culture">
+      <itunes:category text="News Commentary"/>
+    </itunes:category>
+    <itunes:category text="Government">
+      <itunes:category text="Non-profit"/>
+    </itunes:category>
+    <generator>org.motform.merge_rss</generator>
     <item xmlns:podcast="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
       <title>Floating Museum</title>
       <enclosure url="https://pod.alltatalla.se/audio/@omvarldar/floating-museum.mp3" length="4882560" type="audio/mpeg"/>
@@ -27,7 +50,6 @@
       <podcast:soundbite startTime="152.157" duration="3.135">Bite</podcast:soundbite>
       <itunes:block>Yes</itunes:block>
     </item>
-    <itunes:author>Förbundet Allt åt alla</itunes:author>
     <item xmlns:podcast="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
       <title>Rekreation #10: Att förlora</title>
       <enclosure url="https://pod.alltatalla.se/audio/@rekreation/rekreation-10-att-forlora.mp3" length="77597497" type="audio/mpeg"/>
@@ -40,7 +62,6 @@
       <itunes:episodeType>full</itunes:episodeType>
       <podcast:comments uri="https://pod.alltatalla.se/@rekreation/episodes/rekreation-10-att-forlora/comments" contentType="application/podcast-activity+json"/>
     </item>
-    <itunes:summary>Spretig radio från Förbundet Allt åt alla</itunes:summary>
     <item xmlns:podcast="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
       <title>Rekreation #9: Att vara skyldig</title>
       <enclosure url="https://pod.alltatalla.se/audio/@rekreation/rekreation-9-att-vara-skyldig.mp3" length="116104660" type="audio/mpeg"/>
@@ -53,10 +74,6 @@
       <itunes:episodeType>full</itunes:episodeType>
       <podcast:comments uri="https://pod.alltatalla.se/@rekreation/episodes/rekreation-9-att-vara-skyldig/comments" contentType="application/podcast-activity+json"/>
     </item>
-    <itunes:owner>
-      <itunes:name>Radio åt alla</itunes:name>
-      <itunes:email>web@alltatalla.se</itunes:email>
-    </itunes:owner>
     <item xmlns:podcast="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
       <title>Rekreation #8: Att styra</title>
       <enclosure url="https://pod.alltatalla.se/audio/@rekreation/rekreation-8-att-styra.mp3" length="94895191" type="audio/mpeg"/>
@@ -69,7 +86,6 @@
       <itunes:episodeType>full</itunes:episodeType>
       <podcast:comments uri="https://pod.alltatalla.se/@rekreation/episodes/rekreation-8-att-styra/comments" contentType="application/podcast-activity+json"/>
     </item>
-    <itunes:explicit>clean</itunes:explicit>
     <item xmlns:podcast="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
       <title>Rekreation #7: Att rida tigern</title>
       <enclosure url="https://pod.alltatalla.se/audio/@rekreation/rekreation-7-att-rida-tigern.mp3" length="90570741" type="audio/mpeg"/>
@@ -82,7 +98,6 @@
       <itunes:episodeType>full</itunes:episodeType>
       <podcast:comments uri="https://pod.alltatalla.se/@rekreation/episodes/rekreation-7-att-rida-tigern/comments" contentType="application/podcast-activity+json"/>
     </item>
-    <itunes:image href="https://radio.alltatalla.se/wp-content/uploads/2017/05/logo.png"/>
     <item xmlns:podcast="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
       <title>Rekreation #6: Att resa</title>
       <enclosure url="https://pod.alltatalla.se/audio/@rekreation/rekreation-6-att-resa.mp3" length="78012778" type="audio/mpeg"/>
@@ -95,11 +110,6 @@
       <itunes:episodeType>full</itunes:episodeType>
       <podcast:comments uri="https://pod.alltatalla.se/@rekreation/episodes/rekreation-6-att-resa/comments" contentType="application/podcast-activity+json"/>
     </item>
-    <image>
-      <url>https://radio.alltatalla.se/wp-content/uploads/2017/05/logo.png</url>
-      <title>Radio åt alla</title>
-      <link>https://radio.alltatalla.se/</link>
-    </image>
     <item xmlns:podcast="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
       <title>Rekreation #5: Att fly</title>
       <enclosure url="https://pod.alltatalla.se/audio/@rekreation/rekreation-5-att-fly.mp3" length="113884456" type="audio/mpeg"/>
@@ -112,9 +122,6 @@
       <itunes:episodeType>full</itunes:episodeType>
       <podcast:comments uri="https://pod.alltatalla.se/@rekreation/episodes/rekreation-5-att-fly/comments" contentType="application/podcast-activity+json"/>
     </item>
-    <itunes:category text="News">
-      <itunes:category text="Politics"/>
-    </itunes:category>
     <item xmlns:podcast="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
       <title>Rekreation #4: Att älska</title>
       <enclosure url="https://pod.alltatalla.se/audio/@rekreation/rekreation-4-att-alska.mp3" length="69267558" type="audio/mpeg"/>
@@ -127,9 +134,6 @@
       <itunes:episodeType>full</itunes:episodeType>
       <podcast:comments uri="https://pod.alltatalla.se/@rekreation/episodes/rekreation-4-att-alska/comments" contentType="application/podcast-activity+json"/>
     </item>
-    <itunes:category text="Society &amp; Culture">
-      <itunes:category text="News Commentary"/>
-    </itunes:category>
     <item xmlns:podcast="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
       <title>Rekreation #3: Att bo</title>
       <enclosure url="https://pod.alltatalla.se/audio/@rekreation/rekreation-3-att-bo.mp3" length="62827270" type="audio/mpeg"/>
@@ -142,9 +146,6 @@
       <itunes:episodeType>full</itunes:episodeType>
       <podcast:comments uri="https://pod.alltatalla.se/@rekreation/episodes/rekreation-3-att-bo/comments" contentType="application/podcast-activity+json"/>
     </item>
-    <itunes:category text="Government">
-      <itunes:category text="Non-profit"/>
-    </itunes:category>
     <item xmlns:podcast="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
       <title>Rekreation #2: Att mötas</title>
       <enclosure url="https://pod.alltatalla.se/audio/@rekreation/rekreation-2-att-motas.mp3" length="75584524" type="audio/mpeg"/>
@@ -157,7 +158,6 @@
       <itunes:episodeType>full</itunes:episodeType>
       <podcast:comments uri="https://pod.alltatalla.se/@rekreation/episodes/rekreation-2-att-motas/comments" contentType="application/podcast-activity+json"/>
     </item>
-    <generator>org.motform.merge_rss</generator>
     <item xmlns:podcast="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
       <title>Rekreation #1: Att sättas samman</title>
       <enclosure url="https://pod.alltatalla.se/audio/@rekreation/rekreation-1-att-sattas-samman.mp3" length="56922838" type="audio/mpeg"/>

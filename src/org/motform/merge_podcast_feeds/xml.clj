@@ -25,7 +25,7 @@
   "Insert `items` at the loc of `xml-zip` in list order."
   [xml-zip items]
   (reduce
-   (fn [xml-zip item] (zip/left (zip/insert-right xml-zip item)))
+   (fn [xml-zip item] (zip/insert-right xml-zip item))
    (-> xml-zip zip/down zip/rightmost)
    items))
 
