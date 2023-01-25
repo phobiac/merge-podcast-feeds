@@ -16,13 +16,21 @@
   [x y]
   (into [] (concat x y)))
 
-;; TODO: Register these based on user config
+;; TODO: Register these based on user config?
 ;; They are curently mirroring the namespaces used in
 ;;`org.motform.merge-podcast-feeds.xml/hiccup-channel->xml-with-pubDate`
 (xml/alias-uri 'atom    "http://www.w3.org/2005/Atom")
 (xml/alias-uri 'content "http://purl.org/rss/1.0/modules/content/")
 (xml/alias-uri 'itunes  "http://www.itunes.com/dtds/podcast-1.0.dtd")
 (xml/alias-uri 'podcast "https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md")
+
+(defn- xmlns-alias-keyword
+  "Qualify `k` in namespace registered by `xml/alias-uri`."
+  [xmlns-alias k]
+  (let [xmlns (name (ns-name (get (ns-aliases *ns*) xmlns-alias)))]
+    (keyword xmlns (name k))))
+
+(def itunes-tag (partial xmlns-alias-keyword 'itunes))
 
 (defn- itunes-categories
   "Return hiccup representation of nested itunes categories."
@@ -40,18 +48,12 @@
    (fn [tags tag v]
      (let [conj-fn (if (= :itunes/categories tag) concatv conj)
            tag' (case tag
-                  :itunes/author    [::itunes/author v]
-                  :itunes/block     [::itunes/block v]
                   :itunes/categories (itunes-categories v)
-                  :itunes/complete  [::itunes/complete v]
-                  :itunes/explicit  [::itunes/explicit v]
                   :itunes/image     [::itunes/image {:href (:href v)}]
                   :itunes/owner     [::itunes/owner
                                      [::itunes/name (:name v)]
                                      [::itunes/email (:email v)]]
-                  :itunes/subtitle  [::itunes/subtitle v]
-                  :itunes/summary   [::itunes/summary v]
-                  :itunes/type      [::itunes/type v])]
+                  [(itunes-tag tag) v])]
        (conj-fn tags tag')))
    [] itunes-metadata))
 
