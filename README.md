@@ -25,7 +25,7 @@ clj -X:test-merge :config "path-to-config"
 You can hack away code by opening an nrepl Unix socked using:
 
 ``` bash
-clj -A:dev
+clj -M:dev
 ```
 
 ## License

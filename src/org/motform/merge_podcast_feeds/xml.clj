@@ -55,9 +55,22 @@
       (insert-rightmost feeds)
       zip/root))
 
-(defn hiccup-channel->xml-with-pubDate [channel]
+(defn hiccup-channel->xml-with-pubDate
+  "Return map XML of feed, contaning a hiccup formatted <channel>
+  in an <rss> tag containing the most common podcasting xml namespaces.
+
+  TODO:
+  It might be a better idea to include the map of namespaces as an argument,
+  but the current state of the program (230125) does not support those anyway."
+  [channel]
   (xml/sexp-as-element
-   [:rss (conj channel [:pubDate (date/RFC1123-now)])]))
+   [:rss
+    {:version "2.0"
+     :xmlns/itunes  "http://www.itunes.com/dtds/podcast-1.0.dtd"
+     :xmlns/atom    "http://www.w3.org/2005/Atom"
+     :xmlns/podcast "https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md"
+     :xmlns/content "http://purl.org/rss/1.0/modules/content/"}
+    (conj channel [:pubDate (date/RFC1123-now)])]))
 
 (defn emit-test-xml
   "Spit `xml` to resources/xml/test.xml"
