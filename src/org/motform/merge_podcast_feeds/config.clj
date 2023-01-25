@@ -6,8 +6,8 @@
   50% as a way to provide useful errors to users.
   The perfect split, some might argue."
   (:refer-clojure :exclude [get-in])
-  (:require [clojure.data.json :as json]
-            [clojure.java.io :as io]
+  (:require [clojure.data.json  :as json]
+            [clojure.java.io    :as io]
             [clojure.spec.alpha :as s]))
 
 (def *config
@@ -48,8 +48,6 @@
   Will error with explanation on file errors or invalid configurations."
   [json-path]
   (try (with-open [reader (io/reader json-path)]
-         (def p json-path)
-         (def r reader)
          (let [config (parse-json-config reader)
                valid? (s/valid? :config/valid config)]
            (if valid?

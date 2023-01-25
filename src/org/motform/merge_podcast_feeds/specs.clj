@@ -89,7 +89,7 @@
                 :metadata/link
                 :metadata/image]))
 
-(s/def :config/slug string?)
+(s/def :config/slug (s/and string? #(str/starts-with? % "/")))
 (s/def :config/xml-file-path string?)
 (s/def :config/port (s/and number? (complement zero?) #(> 65535 %)))
 
@@ -113,7 +113,3 @@
   (gen/sample (s/gen :itunes/block)) ; ???
 
   )
-
-(defn urlul [url]
-  (try (boolean (URL. url))
-       (catch Exception _ false)))

@@ -22,6 +22,12 @@ Assuming you have Clojure installed, you can run the command below to check your
 clj -X:test-merge :config "path-to-config"
 ```
 
+Once you have made sure that everything is working, you can start your server and serve the merged feed.
+
+``` bash
+clj -X:server :config "path-to-config"
+```
+
 You can hack away code by opening an nrepl Unix socked using:
 
 ``` bash
