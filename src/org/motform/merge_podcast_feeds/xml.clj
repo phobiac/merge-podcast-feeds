@@ -7,8 +7,9 @@
 
 (defn parse-xml-feed
   "Return `clojure.data.xml` representation of `feed-url`."
-  [feed-url] ; TODO: Wrap this in `with-open`?
-  (-> feed-url io/input-stream xml/parse))
+  [feed-url]
+  (with-open [stream (io/input-stream feed-url)]
+    (xml/parse stream)))
 
 (defn- episodes
   "Return seq with podcast episodes, i.e. all <item>."
@@ -72,14 +73,14 @@
      :xmlns/content "http://purl.org/rss/1.0/modules/content/"}
     (conj channel [:pubDate (date/RFC1123-now)])]))
 
-(defn emit-test-xml
+(defn emit-indent-xml
   "Spit `xml` to resources/xml/test.xml"
-  [xml]
-  (with-open [output-file (io/writer "resources/xml/test.xml")]
+  [xml path]
+  (with-open [output-file (io/writer path)]
     (xml/indent xml output-file)))
 
 (defn emit-xml
   "Spit an `xml` to `filename`, should be passed with file extension."
-  [xml filename]
-  (with-open [output-file (io/writer (str "resources/xml/" filename))]
+  [xml path]
+  (with-open [output-file (io/writer path)]
     (xml/emit xml output-file)))

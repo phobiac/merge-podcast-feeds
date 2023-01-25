@@ -9,7 +9,16 @@
   The process is specefic to the prescribed format of the config file.
   I decided against listening to those nasty generalisation instincts.
   As such, hard-coded if's abound."
-  (:require [clojure.data.xml :as xml]))
+  (:require [clojure.data.xml :as xml]
+            [org.motform.merge-podcast-feeds.config :as config]
+            [org.motform.merge-podcast-feeds.xml    :as motform.xml]))
+
+(def *state
+  (atom #:state{:feed    nil
+                :channel nil}))
+
+(defn feed []
+  (get @*state :state/feed))
 
 (defn- concatv
   "Return a vector representing the concatenation of the elements in the supplied colls."
@@ -25,7 +34,8 @@
 (xml/alias-uri 'podcast "https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md")
 
 (defn- xmlns-alias-keyword
-  "Qualify `k` in namespace registered by `xml/alias-uri`."
+  "Qualify `k` in namespace registered by `xml/alias-uri`.
+  Shoutout to @delaguardo in clojurians for helping out."
   [xmlns-alias k]
   (let [xmlns (name (ns-name (get (ns-aliases *ns*) xmlns-alias)))]
     (keyword xmlns (name k))))
@@ -84,7 +94,7 @@
     :rel  "self"
     :type "application/rss+xml"]])
 
-(defn config->hiccup-channel
+(defn ->hiccup-channel
   "Return hiccup representation of `<rss><channel> ... </channel></rss>`.
   To be consumed by `clojure.data.xml/sexp-as-element`.
   It will most likely be done by `org.motform.merge-podcast-feeds.xml/hiccup-feed->xml-with-pubDate`.
@@ -92,9 +102,27 @@
   It is assumed that a config file is stable given the lifetime of the program.
   As such, the caller will have to perform `sexp-as-element` themselves, preferably
   after adding <lastBuildDate>."
-  [{:config/keys [metadata]}]
+  [metadata]
   (-> [:channel]
       (concatv (metadata-tags (dissoc metadata :metadata/itunes :metadata/atom)))
       (conj (atom-link (:metadata/atom metadata)))
       (concatv (itunes-tags (get  metadata :metadata/itunes)))
       (conj [:generator "https://github.com/motform/merge-podcast-feeds"])))
+
+;; TODO: Take into account the feed updating, depending on how we do it
+(defn assemble-feed! []
+  (let [feed-urls   (config/get-in [:config/feeds])
+        channel     (get @*state :state/channel)
+        feeds       (motform.xml/collect-and-sort-feeds feed-urls)
+        xml-no-feed (motform.xml/hiccup-channel->xml-with-pubDate channel)
+        xml         (motform.xml/append-podcast-feeds xml-no-feed feeds)]
+    (swap! *state :state/feed xml)))
+
+(defn make-channel! []
+  (let [metadata (config/get-in [:config/metadata])
+        channel  (->hiccup-channel metadata)]
+    (swap! *state assoc :state/channel channel)))
+
+(defn output-test-feed []
+  (let [path (config/get-in [:config/xml-file-path])]
+    (motform.xml/emit-indent-xml (feed) path)))

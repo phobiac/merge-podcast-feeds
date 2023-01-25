@@ -1,4 +1,7 @@
 {
+	"port": 3000,
+	"slug": "/feed/podcast",
+	"xml-file-path": "resources/xml/test.xml",
 	"feeds": [
 		"https://pod.alltatalla.se/@rekreation/feed.xml",
 		"https://pod.alltatalla.se/@omvarldar/feed.xml"

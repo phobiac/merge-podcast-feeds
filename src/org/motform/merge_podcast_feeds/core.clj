@@ -1,27 +1,25 @@
 (ns org.motform.merge-podcast-feeds.core
   (:require [org.motform.merge-podcast-feeds.config  :as config]
             [org.motform.merge-podcast-feeds.podcast :as podcast]
-            [org.motform.merge-podcast-feeds.xml     :as xml])
+            [org.motform.merge-podcast-feeds.server  :as server]
+            [org.motform.merge-podcast-feeds.specs])
   (:gen-class))
 
-(defn test-merge [{json-config-path :config}]
-  (let [config     (config/parse-json-config json-config-path)
-        feeds       (xml/collect-and-sort-feeds (:config/feeds config))
-        channel     (podcast/config->hiccup-channel config)
-        xml-no-feed (xml/hiccup-channel->xml-with-pubDate channel)
-        xml         (xml/append-podcast-feeds xml-no-feed feeds)]
-    (xml/emit-test-xml xml)
-    ;; (println)
-    ;; (println (clojure.data.xml/indent-str xml))
-    :ok!))
+(defn output-test-xml [& {json-config-path :config}]
+  (config/read-and-validate-json-config json-config-path)
+  (podcast/make-channel!)
+  (podcast/assemble-feed!)
+  (podcast/output-test-feed))
 
 (defn -main
-  "This will be the main entry point, tba."
-  [& args])
+  "The primary entry point, "
+  [& {json-config-path :config}]
+  (config/read-and-validate-json-config json-config-path)
+  (podcast/make-channel!)
+  (podcast/assemble-feed!)
+  (server/start!))
 
 (comment
-  (test-merge {:config "resources/json/example_config.json"})
-
-  (config/parse-json-config "resources/json/example_config.json")
-  :end)
-
+  (-main :config "resources/json/example_config.json")
+  (output-test-xml :config "resources/json/example_config.json")
+  :comment)
