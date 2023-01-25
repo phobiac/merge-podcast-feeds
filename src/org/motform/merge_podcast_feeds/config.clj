@@ -28,10 +28,10 @@
       (keyword ns k))))
 
 (defn parse-json-config
-  "Parse `config-file`, assumes the file to be present
-  and that it will be validated by spec."
-  [config-file]
-  (-> (json/read config-file :key-fn keyword)
+  "Consume and parse `reader`, returning config as a map.
+  Assumes the file to be present and that it will be validated by spec."
+  [reader]
+  (-> (json/read reader :key-fn keyword)
       (update-keys (namespace-keyword "config"))
       (update :config/metadata update-keys (namespace-keyword "metadata"))
       (update-in [:config/metadata :metadata/itunes] update-keys (namespace-keyword "itunes"))))
@@ -41,14 +41,16 @@
   [error-message & {:keys [exit-code why]}]
   (println error-message)
   (when why (println "\nExplanation:\n" why))
-  #_(System/exit exit-code))
+  (System/exit exit-code))
 
 (defn read-and-validate-json-config
   "Try to read config at `json-path`.
   Will error with explanation on file errors or invalid configurations."
   [json-path]
-  (try (with-open [config-file (io/reader json-path)]
-         (let [config (parse-json-config config-file)
+  (try (with-open [reader (io/reader json-path)]
+         (def p json-path)
+         (def r reader)
+         (let [config (parse-json-config reader)
                valid? (s/valid? :config/valid config)]
            (if valid?
              (reset! *config config)

@@ -37,7 +37,7 @@
   "Qualify `k` in namespace registered by `xml/alias-uri`.
   Shoutout to @delaguardo in clojurians for helping out."
   [xmlns-alias k]
-  (let [xmlns (name (ns-name (get (ns-aliases *ns*) xmlns-alias)))]
+  (let [xmlns (name (ns-name (get (ns-aliases 'org.motform.merge-podcast-feeds.podcast) xmlns-alias)))]
     (keyword xmlns (name k))))
 
 (def itunes-tag (partial xmlns-alias-keyword 'itunes))
@@ -116,7 +116,7 @@
         feeds       (motform.xml/collect-and-sort-feeds feed-urls)
         xml-no-feed (motform.xml/hiccup-channel->xml-with-pubDate channel)
         xml         (motform.xml/append-podcast-feeds xml-no-feed feeds)]
-    (swap! *state :state/feed xml)))
+    (swap! *state assoc :state/feed xml)))
 
 (defn make-channel! []
   (let [metadata (config/get-in [:config/metadata])

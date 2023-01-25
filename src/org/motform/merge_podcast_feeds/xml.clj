@@ -5,16 +5,13 @@
             [clojure.zip          :as zip]
             [org.motform.merge-podcast-feeds.date :as date]))
 
-(defn parse-xml-feed
-  "Return `clojure.data.xml` representation of `feed-url`."
+(defn- parse-xml-feed-and-return-items
+  "Parse xml at `feed-url` and return seq with podcast items, i.e. all <item>."
   [feed-url]
   (with-open [stream (io/input-stream feed-url)]
-    (xml/parse stream)))
-
-(defn- episodes
-  "Return seq with podcast episodes, i.e. all <item>."
-  [xml]
-  (map zip/node (zip-xml/xml-> (zip/xml-zip xml) :channel :item)))
+    (let [xml (xml/parse stream)
+          items (zip-xml/xml-> (zip/xml-zip xml) :channel :item)]
+      (map zip/node items))))
 
 (defn- zip-from-root-to-episode-insertion
   "Goes from the root of `xml-zip`, assumed to be <channel>
@@ -43,7 +40,7 @@
   "Return seq of <item> nodes from feed urls in `feeds`."
   [feeds]
   (->> feeds
-       (map (comp episodes parse-xml-feed))
+       (map parse-xml-feed-and-return-items)
        (apply concat)
        (sort-by (comp date/parse-RFC1123 publication-date))))
 
