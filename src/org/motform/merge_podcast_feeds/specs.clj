@@ -93,6 +93,7 @@
 (s/def :config/slug (s/and string? #(str/starts-with? % "/")))
 (s/def :config/xml-file-path string?)
 (s/def :config/port (s/and number? (complement zero?) #(> 65535 %)))
+(s/def :config/poll-rate-in-seconds (s/and number? pos?))
 
 (s/def :castopod/base-url :url/url)
 
@@ -105,7 +106,8 @@
                 :config/slug]
           :opt [:config/xml-file-path
                 :config/feeds
-                :config/castopod]))
+                :config/castopod
+                :config/poll-rate-in-seconds]))
 
 (comment
   (s/valid? :podcast/feed "https://hello-sailor.xml")  ; t

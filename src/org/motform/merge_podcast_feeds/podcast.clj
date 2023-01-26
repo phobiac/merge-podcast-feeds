@@ -243,15 +243,14 @@
 
 ;;; Polling
 
-(def ^:private every-10-minutes
-  (chime/periodic-seq (Instant/now) (Duration/ofMinutes 10)))
+(defn every-x-seconds [seconds]
+  (chime/periodic-seq (Instant/now) (Duration/ofSeconds seconds)))
 
-(defn poll-for-feed-updates [period]
-  (chime/chime-at period #(do (println "[" (instant->RFC1123 %) "] Polling feeds." "")
-                              (assemble-feed!))))
-(comment
-  (poll-for-feed-updates every-10-minutes))
+(defn poll-for-feed-updates []
+  (let [period (every-x-seconds (or (config/get-in [:config/poll-rate-in-seconds]) 600))]
+   (chime/chime-at period #(do (println "[" (instant->RFC1123 %) "] Polling feeds." "")
+                               (assemble-feed!)))))
 
 (mount/defstate poll
-  :start (poll-for-feed-updates every-10-minutes)
+  :start (poll-for-feed-updates)
   :stop  (.close poll))
