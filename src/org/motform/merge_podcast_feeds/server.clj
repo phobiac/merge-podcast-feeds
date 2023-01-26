@@ -1,5 +1,6 @@
 (ns org.motform.merge-podcast-feeds.server
-  (:require [reitit.ring              :as ring]
+  (:require [mount.core               :as mount]
+            [reitit.ring              :as ring]
             [ring.middleware.defaults :refer [api-defaults]]
             [ring.adapter.jetty       :as jetty]
             [ring.middleware.params   :as params]
@@ -32,13 +33,17 @@
    (ring/create-default-handler)))
 
 (defn start! []
-  (let [port (config/get-in [:config/port])
-        slug (config/get-in [:config/slug])
-        app  (app slug)]
-    (jetty/run-jetty app {:port port :join? false})
+  (let [port   (config/get-in [:config/port])
+        slug   (config/get-in [:config/slug])
+        app    (app slug)
+        server (jetty/run-jetty app {:port port :join? false})]
     (println "[" (podcast/RFC1123-date) "] Server running on port:"  port)
-    (println "[" (podcast/RFC1123-date) "] Serving podcast feed at:" slug)))
+    (println "[" (podcast/RFC1123-date) "] Serving podcast feed at:" slug)
+    server))
 
+(mount/defstate server
+  :start (start!)
+  :stop  (.stop server))
 
 (comment
   (start!)

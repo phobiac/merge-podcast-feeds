@@ -8,7 +8,8 @@
   (:refer-clojure :exclude [get-in])
   (:require [clojure.data.json  :as json]
             [clojure.java.io    :as io]
-            [clojure.spec.alpha :as s]))
+            [clojure.spec.alpha :as s]
+            [mount.core         :as mount]))
 
 (def *config
   (atom nil))
@@ -83,6 +84,10 @@
           "Error: Unable to read config."
           :why e
           :exit-code -2))))
+
+(mount/defstate config
+  :start (read-and-validate-json-config (-> (mount/args) first :config))
+  :stop  (reset! *config nil))
 
 (comment
   (read-and-validate-json-config "resources/json/example_config.json")

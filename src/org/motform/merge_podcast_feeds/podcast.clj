@@ -13,7 +13,8 @@
             [clojure.data.zip.xml :as zip-xml]
             [clojure.java.io      :as io]
             [clojure.zip          :as zip]
-            [org.motform.merge-podcast-feeds.config :as config]
+            [mount.core           :as mount]
+            [org.motform.merge-podcast-feeds.config   :as config]
             [org.motform.merge-podcast-feeds.castopod :as castopod])
   (:import (java.time ZonedDateTime Instant Duration ZoneId)
            (java.time.format DateTimeFormatter)))
@@ -235,6 +236,11 @@
 (defn web-feed []
   (get @*state :state/str-feed))
 
+(mount/defstate podcast
+  :start (do (make-channel!)
+             (assemble-feed!))
+  :stop (reset! *state #:state{:channel nil :xml-feed nil :str-feed nil}))
+
 ;;; Polling
 
 (def ^:private every-10-minutes
@@ -246,3 +252,6 @@
 (comment
   (poll-for-feed-updates every-10-minutes))
 
+(mount/defstate poll
+  :start (poll-for-feed-updates every-10-minutes)
+  :stop  (.close poll))
