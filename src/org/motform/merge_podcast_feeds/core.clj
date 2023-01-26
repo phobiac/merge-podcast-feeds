@@ -19,6 +19,7 @@
   (config/read-and-validate-json-config json-config-path)
   (podcast/make-channel!)
   (podcast/assemble-feed!)
+  (podcast/poll-for-feed-updates podcast/every-10-minutes)
   (server/start!))
 
 (comment

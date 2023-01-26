@@ -8,20 +8,20 @@
   can be used for debugging config files and feed links.
 
   This namespace assumes all config validation is taken care of by `org.motform.merge-podcast-feeds.config`."
-  (:require [clojure.data.xml     :as xml]
+  (:require [chime.core :as chime]
+            [clojure.data.xml     :as xml]
             [clojure.data.zip.xml :as zip-xml]
             [clojure.java.io      :as io]
             [clojure.zip          :as zip]
             [org.motform.merge-podcast-feeds.config :as config]
             [org.motform.merge-podcast-feeds.castopod :as castopod])
-  (:import (java.time ZonedDateTime)
+  (:import (java.time ZonedDateTime Instant Duration ZoneId)
            (java.time.format DateTimeFormatter)))
 
-(def *state
+(def ^:private *state
   (atom #:state{:channel  nil
                 :xml-feed nil
                 :str-feed nil}))
-
 
 ;;; Utility
 
@@ -29,7 +29,6 @@
   "Return a vector representing the concatenation of the elements in the supplied colls."
   [x y]
   (into [] (concat x y)))
-
 
 ;; Date handling
 
@@ -39,13 +38,17 @@
   (let [formatter (DateTimeFormatter/RFC_1123_DATE_TIME)]
     (ZonedDateTime/parse rfc1123-date formatter)))
 
-(defn- RFC1123-date
+(defn RFC1123-date
   "Return string current time formatted per RFC1123."
   []
   (let [formatter (DateTimeFormatter/RFC_1123_DATE_TIME)
         now       (ZonedDateTime/now)]
     (. formatter format now)))
 
+(defn- instant->RFC1123 [instant]
+  (.. (DateTimeFormatter/RFC_1123_DATE_TIME)
+      (withZone (ZoneId/systemDefault))
+      (format instant)))
 
 ;;; XML wrangling
 
@@ -113,7 +116,6 @@
      :xmlns/podcast "https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md"
      :xmlns/content "http://purl.org/rss/1.0/modules/content/"}
     (conj channel [:pubDate (RFC1123-date)])]))
-
 
 ;;; <rss> and <channel> assembly
 
@@ -200,8 +202,9 @@
       (concatv (itunes-tags (get  metadata :metadata/itunes)))
       (conj [:generator "https://github.com/motform/merge-podcast-feeds"])))
 
-
-(defn feed-urls []
+(defn- feed-urls
+  "Return the podcast feed urls from the configured feeds or from castopod."
+  []
   (if-let [feeds (config/get-in [:config/feeds])]
     feeds
     (castopod/podcast-feed-urls)))
@@ -213,8 +216,9 @@
         channel  (->hiccup-channel metadata)]
     (swap! *state assoc :state/channel channel)))
 
-;; TODO: Define a process for feed updates
-(defn assemble-feed! []
+(defn assemble-feed!
+  "TODO: Document how the feed is updated here."
+  []
   (let [channel     (get @*state :state/channel)
         feeds       (collect-and-sort-feeds (feed-urls))
         xml-no-feed (hiccup-channel->xml-with-pubDate channel)
@@ -230,3 +234,15 @@
 
 (defn web-feed []
   (get @*state :state/str-feed))
+
+;;; Polling
+
+(def ^:private every-10-minutes
+  (chime/periodic-seq (Instant/now) (Duration/ofMinutes 10)))
+
+(defn poll-for-feed-updates [period]
+  (chime/chime-at period #(do (println "[" (instant->RFC1123 %) "] Polling feeds." "")
+                              (assemble-feed!))))
+(comment
+  (poll-for-feed-updates every-10-minutes))
+

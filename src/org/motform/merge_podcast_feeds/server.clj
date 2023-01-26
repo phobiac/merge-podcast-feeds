@@ -10,12 +10,21 @@
 (defn app [slug]
   (ring/ring-handler
    (ring/router
-    [slug
-     {:name ::feed
-      :doc  "The primary route serving the merged podcast feed."
-      :get  (fn [_]
-              {:status 200
-               :body   (podcast/web-feed)})}]
+    [[slug
+      {:name ::feed
+       :doc  "The primary route serving the merged podcast feed."
+       :get  (fn [_]
+               {:status 200
+                :body   (podcast/web-feed)})}]
+
+     ["/update-podcast-feeds"
+      {:name ::update
+       :doc  "Requests the server to update and re-assemble the podcast feed."
+       :put (fn [_]
+              (println "[" (podcast/RFC1123-date) "] Podcast update requested.")
+              (podcast/assemble-feed!)
+              (println "[" (podcast/RFC1123-date) "] Podcast update successful.")
+              {:status 204})}]]
     {:data
      {:middleware [defaults/ring-defaults-middleware
                    params/wrap-params]
@@ -27,8 +36,9 @@
         slug (config/get-in [:config/slug])
         app  (app slug)]
     (jetty/run-jetty app {:port port :join? false})
-    (println "Server running on port:" port)
-    (println "Serving podcast feed at:" slug)))
+    (println "[" (podcast/RFC1123-date) "] Server running on port:"  port)
+    (println "[" (podcast/RFC1123-date) "] Serving podcast feed at:" slug)))
+
 
 (comment
   (start!)
