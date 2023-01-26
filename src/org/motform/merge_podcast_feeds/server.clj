@@ -32,7 +32,9 @@
       :defaults api-defaults}})
    (ring/create-default-handler)))
 
-(defn start! []
+(defn start!
+  "Start and return web server, based on user config.."
+  []
   (let [port   (config/get-in [:config/port])
         slug   (config/get-in [:config/slug])
         app    (app slug)

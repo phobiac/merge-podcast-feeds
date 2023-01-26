@@ -1,5 +1,5 @@
 {
-	"poll-rate-in-seconds": 600,
+	"poll-rate-in-seconds": 60,
 	"port": 1949,
 	"slug": "/feed/podcast",
 	"xml-file-path": "resources/xml/test.xml",

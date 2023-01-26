@@ -103,11 +103,7 @@
 
 (defn hiccup-channel->xml-with-pubDate
   "Return map XML of feed, contaning a hiccup formatted <channel>
-  in an <rss> tag containing the most common podcasting xml namespaces.
-
-  TODO:
-  It might be a better idea to include the map of namespaces as an argument,
-  but the current state of the program (230125) does not support those anyway."
+  in an <rss> tag containing the most common podcasting xml namespaces."
   [channel]
   (xml/sexp-as-element
    [:rss
@@ -120,8 +116,6 @@
 
 ;;; <rss> and <channel> assembly
 
-;; TODO: Register these based on user config?
-;;       They are curently mirroring the namespaces used in `hiccup-channel->xml-with-pubDate`.
 (xml/alias-uri 'atom    "http://www.w3.org/2005/Atom")
 (xml/alias-uri 'content "http://purl.org/rss/1.0/modules/content/")
 (xml/alias-uri 'itunes  "http://www.itunes.com/dtds/podcast-1.0.dtd")
@@ -144,7 +138,6 @@
      (when sub-category
        [::itunes/category {:text sub-category}])]))
 
-;; TODO XMLNS
 (defn- itunes-tags
   "Return hiccup representation of the itunes tags from user config."
   [itunes-metadata]
@@ -212,13 +205,17 @@
 
 ;;; Main functions
 
-(defn make-channel! []
+(defn make-channel!
+  "Make hiccup representation of <channel> metadata, and add to `*state`.
+  This is assumed to be stable as it is controlled by the config."
+  []
   (let [metadata (config/get-in [:config/metadata])
         channel  (->hiccup-channel metadata)]
     (swap! *state assoc :state/channel channel)))
 
 (defn assemble-feed!
-  "TODO: Document how the feed is updated here."
+  "Assemble the podcast feed, taking the hiccup representation of <channel>
+  from `*state` and appending the podcast feeds to be merged."
   []
   (let [channel     (get @*state :state/channel)
         feeds       (collect-and-sort-feeds (feed-urls))
@@ -228,12 +225,16 @@
            :state/xml-feed xml
            :state/str-feed (xml/indent-str xml))))
 
-(defn output-test-feed []
+(defn output-test-feed
+  "Emit .xml file to `:config/xml-file-path`."
+  []
   (let [path (config/get-in [:config/xml-file-path])]
     (with-open [output-file (io/writer path)]
       (xml/indent (get @*state :state/xml-feed) output-file))))
 
-(defn web-feed []
+(defn web-feed
+  "Return indented xml feed for http consumption."
+  []
   (get @*state :state/str-feed))
 
 (mount/defstate podcast
@@ -243,14 +244,18 @@
 
 ;;; Polling
 
-(defn every-x-seconds [seconds]
+(defn- every-x-seconds [seconds]
   (chime/periodic-seq (Instant/now) (Duration/ofSeconds seconds)))
 
-(defn poll-for-feed-updates []
-  (let [period (every-x-seconds (or (config/get-in [:config/poll-rate-in-seconds]) 600))]
-   (chime/chime-at period #(do (println "[" (instant->RFC1123 %) "] Polling feeds." "")
-                               (assemble-feed!)))))
+(defn- poll-for-feed-updates []
+  (when-let [poll-rate (config/get-in [:config/poll-rate-in-seconds])]
+    (chime/chime-at (every-x-seconds poll-rate)
+                    #(do (println "[" (instant->RFC1123 %) "] Polling feeds." "")
+                         (assemble-feed!)))))
+
+(defn stop-polling [chime]
+  (when chime (.close chime)))
 
 (mount/defstate poll
   :start (poll-for-feed-updates)
-  :stop  (.close poll))
+  :stop  (stop-polling poll))

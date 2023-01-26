@@ -13,16 +13,6 @@
   (podcast/output-test-feed)
   (println "Successfully emitted xml at:" (config/get-in [:config/xml-file-path])))
 
-;; (defn -main
-;;   "The primary entry point, parses the config and serves the podcast feed
-;;   at the slug and port specified by the config."
-;;   [& {json-config-path :config}]
-;;   (config/read-and-validate-json-config json-config-path)
-;;   (podcast/make-channel!)
-;;   (podcast/assemble-feed!)
-;;   (podcast/poll-for-feed-updates podcast/every-10-minutes)
-;;   (server/start!))
-
 (defn -main
   "The main entry point, parses the config and serves the podcast feed
   at the slug and port specified by the config."
