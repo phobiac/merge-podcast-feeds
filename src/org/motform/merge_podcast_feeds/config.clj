@@ -50,12 +50,26 @@
   (try (with-open [reader (io/reader json-path)]
          (let [config (parse-json-config reader)
                valid? (s/valid? :config/valid config)]
-           (if valid?
-             (reset! *config config)
+
+           (when-not valid?
              (exit-with-error-message
               "Error: Config includes incorrect metadata.\n"
               :why (s/explain :config/valid config)
-              :exit-code -10))))
+              :exit-code -3))
+
+           (when (and (config :config/castopod)
+                      (config :config/feeds))
+             (exit-with-error-message
+              "Error: Config includes both \"feeds\" and \"castopod\" keys. You can only use one or the other."
+              :exit-code -4))
+
+           (when-not (or (config :config/castopod)
+                         (config :config/feeds))
+             (exit-with-error-message
+              "Error: Config does not include \"feeds\" or \"castopod\" keys. You have to specify a podcast feed source."
+              :exit-code -5))
+
+           (reset! *config config)))
 
        (catch java.io.FileNotFoundException e
          (exit-with-error-message

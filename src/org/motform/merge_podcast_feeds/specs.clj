@@ -18,9 +18,10 @@
   #(re-matches #"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])" %))
 
 (s/def :url/url
-  (fn [url]
-    (try (boolean (URL. url))
-         (catch Exception _ false))))
+  (s/and string?
+         (fn [url]
+           (try (boolean (URL. url))
+                (catch Exception _ false)))))
 
 (s/def :url/href :url/url)
 
@@ -93,12 +94,18 @@
 (s/def :config/xml-file-path string?)
 (s/def :config/port (s/and number? (complement zero?) #(> 65535 %)))
 
+(s/def :castopod/base-url :url/url)
+
+(s/def :config/castopod
+  (s/keys :req-un [:castopod/base-url]))
+
 (s/def :config/valid
-  (s/keys :req [:config/feeds
-                :config/metadata
+  (s/keys :req [:config/metadata
                 :config/port
                 :config/slug]
-          :opt [:config/xml-file-path]))
+          :opt [:config/xml-file-path
+                :config/feeds
+                :config/castopod]))
 
 (comment
   (s/valid? :podcast/feed "https://hello-sailor.xml")  ; t
@@ -111,5 +118,4 @@
 
   (require '[clojure.spec.gen.alpha :as gen])
   (gen/sample (s/gen :itunes/block)) ; ???
-
   )

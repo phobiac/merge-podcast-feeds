@@ -12,7 +12,8 @@
             [clojure.data.zip.xml :as zip-xml]
             [clojure.java.io      :as io]
             [clojure.zip          :as zip]
-            [org.motform.merge-podcast-feeds.config :as config])
+            [org.motform.merge-podcast-feeds.config :as config]
+            [org.motform.merge-podcast-feeds.castopod :as castopod])
   (:import (java.time ZonedDateTime)
            (java.time.format DateTimeFormatter)))
 
@@ -200,6 +201,11 @@
       (conj [:generator "https://github.com/motform/merge-podcast-feeds"])))
 
 
+(defn feed-urls []
+  (if-let [feeds (config/get-in [:config/feeds])]
+    feeds
+    (castopod/podcast-feed-urls)))
+
 ;;; Main functions
 
 (defn make-channel! []
@@ -209,9 +215,8 @@
 
 ;; TODO: Define a process for feed updates
 (defn assemble-feed! []
-  (let [feed-urls   (config/get-in [:config/feeds])
-        channel     (get @*state :state/channel)
-        feeds       (collect-and-sort-feeds feed-urls)
+  (let [channel     (get @*state :state/channel)
+        feeds       (collect-and-sort-feeds (feed-urls))
         xml-no-feed (hiccup-channel->xml-with-pubDate channel)
         xml         (append-podcast-feeds xml-no-feed feeds)]
     (swap! *state assoc

@@ -24,4 +24,5 @@
 (comment
   (-main           :config "resources/json/example_config.json")
   (output-test-xml :config "resources/json/example_config.json")
+  (config/read-and-validate-json-config "resources/json/example_config.json")
   :comment)

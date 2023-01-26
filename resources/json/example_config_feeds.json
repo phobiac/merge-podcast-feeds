@@ -2,9 +2,10 @@
 	"port": 1949,
 	"slug": "/feed/podcast",
 	"xml-file-path": "resources/xml/test.xml",
-	"castopod": {
-		"base-url": "https://pod.alltatalla.se"
-	},
+	"feeds": [
+		"https://pod.alltatalla.se/@rekreation/feed.xml",
+		"https://pod.alltatalla.se/@omvarldar/feed.xml"
+	],
 	"metadata": {
 		"title": "Radio åt alla",
 		"link": "https://radio.alltatalla.se/",
