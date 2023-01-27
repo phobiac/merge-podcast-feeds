@@ -6,13 +6,12 @@
   50% as a way to provide useful errors to users.
   The perfect split, some might argue."
   (:refer-clojure :exclude [get-in])
-  (:require [com.brunobonacci.mulog :as u]
-            [clojure.data.json      :as json]
+  (:require [clojure.data.json      :as json]
             [clojure.java.io        :as io]
             [clojure.spec.alpha     :as s]
             [mount.core             :as mount]))
 
-(def *config
+(defonce ^:private *config
   (atom nil))
 
 (defn get-in
@@ -29,6 +28,13 @@
       (keyword ns (name k))
       (keyword ns k))))
 
+(defn- ?update-in
+  "Updates value in `m` with `f` if `ks` is non-nil."
+  [m ks f]
+  (if (clojure.core/get-in m ks)
+    (update-in m ks f)
+    m))
+
 (defn parse-json-config
   "Consume and parse `reader`, returning config as a map.
   Assumes the file to be present and that it will be validated by spec."
@@ -36,15 +42,14 @@
   (-> (json/read reader :key-fn keyword)
       (update-keys (namespace-keyword "config"))
       (update :config/metadata update-keys (namespace-keyword "metadata"))
+      (?update-in [:config/logging :loggers] set)
       (update-in [:config/metadata :metadata/itunes] update-keys (namespace-keyword "itunes"))))
 
 (defn- exit-with-error-message
   "Exit process with `exit-code` and print `error-message`."
   [error-message & {:keys [exit-code reason]}]
-  (u/log :error/exit
-         :error/message error-message
-         :error/reason  reason
-         :error/code    exit-code)
+  (println error-message)
+  (when reason (println "\nReason:\n" reason))
   (System/exit exit-code))
 
 (defn read-and-validate-json-config
@@ -93,5 +98,7 @@
   :stop  (reset! *config nil))
 
 (comment
+  (mount/start-with-args [{:config "resources/json/example_config.json"}]
+                         #'org.motform.merge-podcast-feeds.config/config)
   (read-and-validate-json-config "resources/json/example_config.json")
   :comment)

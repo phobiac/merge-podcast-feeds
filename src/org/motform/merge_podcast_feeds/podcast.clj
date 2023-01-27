@@ -20,7 +20,7 @@
             [org.motform.merge-podcast-feeds.date     :as date])
   (:import (java.time Instant Duration)))
 
-(def ^:private *state
+(defonce ^:private *state
   (atom #:state{:channel  nil
                 :xml-feed nil
                 :str-feed nil}))
@@ -223,7 +223,6 @@
              (assemble-feed!))
   :stop (reset! *state #:state{:channel nil :xml-feed nil :str-feed nil}))
 
-
 ;;; Polling
 
 (defn- every-x-seconds [seconds]
@@ -232,8 +231,10 @@
 (defn- poll-for-feed-updates []
   (when-let [poll-rate (config/get-in [:config/poll-rate-in-seconds])]
     (chime/chime-at (every-x-seconds poll-rate)
-                    #(do (u/log :poll/polling-feeds)
-                         (assemble-feed!)))))
+                    (fn [_]
+                      (u/log :poll/polling-feeds)
+                      (assemble-feed!))
+                    {:error-handler #(u/log :poll/error :error/reason %)})))
 
 (mount/defstate poll
   :start (poll-for-feed-updates)

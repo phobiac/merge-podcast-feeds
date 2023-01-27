@@ -101,6 +101,15 @@
 (s/def :config/castopod
   (s/keys :req-un [:castopod/base-url]))
 
+(s/def :config/host-url (s/and string? #(not (str/ends-with? % "/"))))
+
+(s/def :logging/publisher #{"console" "file"})
+(s/def :logging/loggers (s/and seq (s/coll-of :logging/publisher)))
+(s/def :logging/file-path string?)
+(s/def :config/logging
+  (s/keys :req-un [:logging/loggers]
+          :opt-un [:logging/file-path]))
+
 (s/def :config/valid
   (s/keys :req [:config/metadata
                 :config/port
@@ -109,7 +118,8 @@
                 :config/feeds
                 :config/host-url
                 :config/poll-rate-in-seconds
-                :config/xml-file-path]))
+                :config/xml-file-path
+                :config/logging]))
 
 (comment
   (s/valid? :podcast/feed "https://hello-sailor.xml")  ; t

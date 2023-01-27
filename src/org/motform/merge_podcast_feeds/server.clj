@@ -43,9 +43,9 @@
         app    (app slug)
         server (jetty/run-jetty app {:port port :join? false})]
     (u/log ::start
-           :message "Server started successfully."
-           :port port
-           :feed slug)
+           :message      "Server started successfully."
+           :server/port  port
+           :podcast/feed slug)
     server))
 
 (mount/defstate server
