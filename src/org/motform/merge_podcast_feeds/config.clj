@@ -6,10 +6,11 @@
   50% as a way to provide useful errors to users.
   The perfect split, some might argue."
   (:refer-clojure :exclude [get-in])
-  (:require [clojure.data.json  :as json]
-            [clojure.java.io    :as io]
-            [clojure.spec.alpha :as s]
-            [mount.core         :as mount]))
+  (:require [com.brunobonacci.mulog :as u]
+            [clojure.data.json      :as json]
+            [clojure.java.io        :as io]
+            [clojure.spec.alpha     :as s]
+            [mount.core             :as mount]))
 
 (def *config
   (atom nil))
@@ -39,9 +40,11 @@
 
 (defn- exit-with-error-message
   "Exit process with `exit-code` and print `error-message`."
-  [error-message & {:keys [exit-code why]}]
-  (println error-message)
-  (when why (println "\nExplanation:\n" why))
+  [error-message & {:keys [exit-code reason]}]
+  (u/log :error/exit
+         :error/message error-message
+         :error/reason  reason
+         :error/code    exit-code)
   (System/exit exit-code))
 
 (defn read-and-validate-json-config
@@ -55,7 +58,7 @@
            (when-not valid?
              (exit-with-error-message
               "Error: Config includes incorrect metadata.\n"
-              :why (s/explain :config/valid config)
+              :reason (s/explain :config/valid config)
               :exit-code -3))
 
            (when (and (config :config/castopod)
@@ -76,13 +79,13 @@
          (exit-with-error-message
           (str "Error: Unable to read file at path: \"" json-path "\"\n"
                "Path is incorrect or file does not exist.")
-          :why e
+          :reason e
           :exit-code -1))
 
        (catch Exception e
          (exit-with-error-message
           "Error: Unable to read config."
-          :why e
+          :reason e
           :exit-code -2))))
 
 (mount/defstate config

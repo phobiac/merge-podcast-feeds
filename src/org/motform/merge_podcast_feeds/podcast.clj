@@ -8,16 +8,17 @@
   can be used for debugging config files and feed links.
 
   This namespace assumes all config validation is taken care of by `org.motform.merge-podcast-feeds.config`."
-  (:require [chime.core :as chime]
-            [clojure.data.xml     :as xml]
-            [clojure.data.zip.xml :as zip-xml]
-            [clojure.java.io      :as io]
-            [clojure.zip          :as zip]
-            [mount.core           :as mount]
+  (:require [com.brunobonacci.mulog :as u]
+            [chime.core             :as chime]
+            [clojure.data.xml       :as xml]
+            [clojure.data.zip.xml   :as zip-xml]
+            [clojure.java.io        :as io]
+            [clojure.zip            :as zip]
+            [mount.core             :as mount]
             [org.motform.merge-podcast-feeds.config   :as config]
-            [org.motform.merge-podcast-feeds.castopod :as castopod])
-  (:import (java.time ZonedDateTime Instant Duration ZoneId)
-           (java.time.format DateTimeFormatter)))
+            [org.motform.merge-podcast-feeds.castopod :as castopod]
+            [org.motform.merge-podcast-feeds.date     :as date])
+  (:import (java.time Instant Duration)))
 
 (def ^:private *state
   (atom #:state{:channel  nil
@@ -30,26 +31,6 @@
   "Return a vector representing the concatenation of the elements in the supplied colls."
   [x y]
   (into [] (concat x y)))
-
-;; Date handling
-
-(defn- parse-RFC1123-date
-  "Return comparable `ZonedDateTime` instance from parsed RFC1123 date string."
-  [^String rfc1123-date]
-  (let [formatter (DateTimeFormatter/RFC_1123_DATE_TIME)]
-    (ZonedDateTime/parse rfc1123-date formatter)))
-
-(defn RFC1123-date
-  "Return string current time formatted per RFC1123."
-  []
-  (let [formatter (DateTimeFormatter/RFC_1123_DATE_TIME)
-        now       (ZonedDateTime/now)]
-    (. formatter format now)))
-
-(defn- instant->RFC1123 [instant]
-  (.. (DateTimeFormatter/RFC_1123_DATE_TIME)
-      (withZone (ZoneId/systemDefault))
-      (format instant)))
 
 ;;; XML wrangling
 
@@ -90,7 +71,7 @@
   (->> feeds
        (map parse-xml-feed-and-return-items)
        (apply concat)
-       (sort-by (comp parse-RFC1123-date publication-date))))
+       (sort-by (comp date/parse-RFC1123 publication-date))))
 
 (defn- append-podcast-feeds
   "Append `feeds` to `xml` in order at rightmost position."
@@ -112,7 +93,7 @@
      :xmlns/atom    "http://www.w3.org/2005/Atom"
      :xmlns/podcast "https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md"
      :xmlns/content "http://purl.org/rss/1.0/modules/content/"}
-    (conj channel [:pubDate (RFC1123-date)])]))
+    (conj channel [:pubDate (date/RFC1123)])]))
 
 ;;; <rss> and <channel> assembly
 
@@ -242,6 +223,7 @@
              (assemble-feed!))
   :stop (reset! *state #:state{:channel nil :xml-feed nil :str-feed nil}))
 
+
 ;;; Polling
 
 (defn- every-x-seconds [seconds]
@@ -250,12 +232,9 @@
 (defn- poll-for-feed-updates []
   (when-let [poll-rate (config/get-in [:config/poll-rate-in-seconds])]
     (chime/chime-at (every-x-seconds poll-rate)
-                    #(do (println "[" (instant->RFC1123 %) "] Polling feeds." "")
+                    #(do (u/log :poll/polling-feeds)
                          (assemble-feed!)))))
-
-(defn stop-polling [chime]
-  (when chime (.close chime)))
 
 (mount/defstate poll
   :start (poll-for-feed-updates)
-  :stop  (stop-polling poll))
+  :stop  #(when poll (.close poll)))

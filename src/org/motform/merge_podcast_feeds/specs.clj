@@ -1,7 +1,8 @@
 (ns org.motform.merge-podcast-feeds.specs
   "The validation is based of the list found at:
   https://help.apple.com/itc/podcasts_connect/#/itcb54353390
-   Note it requries iTunes tags, as you probably want to syndicate your show there."
+
+  iTunes tags are required, as they form standard podcast metadata."
   (:require [clojure.edn        :as edn]
             [clojure.java.io    :as io]
             [clojure.spec.alpha :as s]
@@ -104,10 +105,11 @@
   (s/keys :req [:config/metadata
                 :config/port
                 :config/slug]
-          :opt [:config/xml-file-path
+          :opt [:config/castopod
                 :config/feeds
-                :config/castopod
-                :config/poll-rate-in-seconds]))
+                :config/host-url
+                :config/poll-rate-in-seconds
+                :config/xml-file-path]))
 
 (comment
   (s/valid? :podcast/feed "https://hello-sailor.xml")  ; t
@@ -118,6 +120,4 @@
   (valid-itunes-category? ["Pizza"])
   (valid-itunes-category? ["Arts" "Books"])
 
-  (require '[clojure.spec.gen.alpha :as gen])
-  (gen/sample (s/gen :itunes/block)) ; ???
   )
