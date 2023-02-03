@@ -24,8 +24,8 @@
       {:name :podcast/update
        :doc  "Requests the server to update and re-assemble the podcast feed.
               The `:get` response is intended for WebSub verification, while
-              the `:post` response prompts feed re-assembly. This can be called
-              manually, or via WebSub."
+              the `:post` response require no body and prompts feed re-assembly.
+              This can be called manually, or via WebSub."
        :get  websub/handle-verification
        :post websub/handle-update-request}]]
 

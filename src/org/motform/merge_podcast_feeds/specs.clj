@@ -47,7 +47,7 @@
 
 ;; iTunes tags
 (def itunes-categories
-  (with-open [reader (io/reader "resources/edn/itunes_categories.edn")]
+  (with-open [reader (io/reader (io/resource "edn/itunes_categories.edn"))]
     (edn/read (PushbackReader. reader))))
 
 (defn valid-itunes-category? [[category sub-category]]

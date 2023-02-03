@@ -21,9 +21,10 @@
   (:import (java.time Instant Duration)))
 
 (defonce ^:private *state
-  (atom #:state{:channel  nil
-                :xml-feed nil
-                :str-feed nil}))
+  (atom #:state{:channel   nil
+                :feed-urls nil ; TODO: Save all the feed urls.
+                :xml-feed  nil
+                :str-feed  nil}))
 
 ;;; Utility
 

@@ -4,20 +4,26 @@
   The validation is in many ways total overkill and exists
   50% as an excuse for me to practice `spec`,
   50% as a way to provide useful errors to users.
-  The perfect split, some might argue."
+  The perfect split, some might argue.
+
+  Assumes that the config lives as \"resources/json/config.json\",
+  configurable via `*config-path*`. "
   (:refer-clojure :exclude [get-in])
-  (:require [clojure.data.json      :as json]
-            [clojure.java.io        :as io]
-            [clojure.spec.alpha     :as s]
-            [mount.core             :as mount]))
+  (:require [clojure.data.json  :as json]
+            [clojure.java.io    :as io]
+            [clojure.spec.alpha :as s]
+            [mount.core         :as mount]))
 
 (defonce ^:private *config
   (atom nil))
 
+(defonce ^:dynamic *config-path*
+  "json/config.json")
+
 (defn get-in
   "Return the value at `ks` from parsed config.
   Return nil if the key is not present, or the not-found value if supplied."
-  ([ks] (clojure.core/get-in @*config ks))
+  ([ks] (get-in ks nil))
   ([ks not-found] (clojure.core/get-in @*config ks not-found)))
 
 (defn- namespace-keyword
@@ -56,7 +62,8 @@
   "Try to read config at `json-path`.
   Will error with explanation on file errors or invalid configurations."
   [json-path]
-  (try (with-open [reader (io/reader json-path)]
+  (println "Reading config at" json-path)
+  (try (with-open [reader (io/reader (io/resource json-path))]
          (let [config (parse-json-config reader)
                valid? (s/valid? :config/valid config)]
 
@@ -94,7 +101,7 @@
           :exit-code -2))))
 
 (mount/defstate config
-  :start (read-and-validate-json-config (-> (mount/args) first :config))
+  :start (read-and-validate-json-config *config-path*)
   :stop  (reset! *config nil))
 
 (comment
