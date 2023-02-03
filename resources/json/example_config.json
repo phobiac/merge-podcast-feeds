@@ -1,0 +1,51 @@
+{
+	"poll-rate-in-seconds": 600,
+	"host-url": "https://pod.alltatalla.se",
+	"port": 8090,
+	"slug": "/feed/podcast",
+	"xml-file-path": "resources/xml/test.xml",
+	"castopod": {
+		"base-url": "https://pod.alltatalla.se"
+	},
+	"logging": {
+		"loggers": [
+			"console",
+			"file"
+		],
+		"file-path": "/tmp/merge-podcasts/test.log"
+	},
+	"metadata": {
+		"title": "Radio åt alla",
+		"link": "https://radio.alltatalla.se/",
+		"atom": "https://radio.alltatalla.se/feed/podcast", 
+		"description": "Spretig radio från Förbundet Allt åt alla",
+		"language": "sv-SE",
+		"copyright": "kopimi Allt åt alla",
+		"image": {
+			"url": "https://radio.alltatalla.se/wp-content/uploads/2017/05/logo.png",
+			"title": "Radio åt alla",
+			"link": "https://radio.alltatalla.se/"
+		},
+		"itunes": {
+			"author": "Förbundet Allt åt alla",
+			"categories": [
+				["News", "Politics"],
+				["News", "News Commentary"],
+				["Government"],
+				["Business", "Non-Profit"],
+				["Society &amp; Culture", "Philosophy"]
+			],
+			"explicit": "false",
+			"image": {
+				"href": "https://radio.alltatalla.se/wp-content/uploads/2017/05/logo.png"
+			},
+			"owner": {
+				"name": "Radio åt alla",
+				"email": "web@alltatalla.se"
+			},
+			"type": "serial",
+			"subtitle": "Spretig radio från Förbundet Allt åt alla",
+			"summary": "Spretig radio från Förbundet Allt åt alla"
+		}
+	}
+}
