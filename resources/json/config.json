@@ -7,6 +7,9 @@
 	"castopod": {
 		"base-url": "https://pod.alltatalla.se"
 	},
+	"websub": {
+		"hub": "http://pubsubhubbub.superfeedr.com"
+	},
 	"logging": {
 		"loggers": [
 			"console",

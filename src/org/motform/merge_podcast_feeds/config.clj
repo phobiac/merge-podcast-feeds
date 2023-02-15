@@ -105,7 +105,6 @@
   :stop  (reset! *config nil))
 
 (comment
-  (mount/start-with-args [{:config "resources/json/example_config.json"}]
-                         #'org.motform.merge-podcast-feeds.config/config)
+  (mount/start #'org.motform.merge-podcast-feeds.config/config)
   (read-and-validate-json-config "resources/json/example_config.json")
   :comment)

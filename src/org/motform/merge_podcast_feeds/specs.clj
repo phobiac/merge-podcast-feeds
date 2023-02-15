@@ -110,6 +110,9 @@
   (s/keys :req-un [:logging/loggers]
           :opt-un [:logging/file-path]))
 
+(s/def :websub/hub :url/url)
+(s/def :config/websub (s/keys :req-un [:websub/hub]))
+
 (s/def :config/valid
   (s/keys :req [:config/metadata
                 :config/port
@@ -119,7 +122,8 @@
                 :config/host-url
                 :config/poll-rate-in-seconds
                 :config/xml-file-path
-                :config/logging]))
+                :config/logging
+                :config/websub]))
 
 (comment
   (s/valid? :podcast/feed "https://hello-sailor.xml")  ; t
