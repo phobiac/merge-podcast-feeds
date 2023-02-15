@@ -1,5 +1,5 @@
 {
-	"port": 1949,
+	"port": 8090,
 	"slug": "/feed/podcast",
 	"xml-file-path": "resources/xml/test.xml",
 	"feeds": [
