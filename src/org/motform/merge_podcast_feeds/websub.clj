@@ -6,22 +6,22 @@
   (:require [chime.core             :as chime]
             [com.brunobonacci.mulog :as u]
             [hato.client            :as http]
+            [mount.core             :as mount]
             [org.motform.merge-podcast-feeds.config  :as config]
             [org.motform.merge-podcast-feeds.podcast :as podcast])
-  (:import (java.time Duration)))
+  (:import (java.time Instant)))
 
 (def *subscription-requests (atom #{}))
 
 (def route-name "/update-podcast-feeds")
 
-(defn feed-url []
-  (let [host-url (config/get-in [:config/host-url])
-        slug     (config/get-in [:config/slug])]
-    (str host-url slug)))
+(defn topic
+  "The topic, in WebSub parlace, is the URL of the feed that we are publishing."
+  []
+  (str (config/get-in [:config/host-url]) (config/get-in [:config/slug])))
 
 (defn update-url []
-  (let [host-url (config/get-in [:config/host-url])]
-    (str host-url route-name)))
+  (str (config/get-in [:config/host-url]) route-name))
 
 (def client
   (http/build-http-client {:redirect-policy :always
@@ -32,7 +32,12 @@
 (def url-regex ; Source: https://stackoverflow.com/a/6041965
   (re-pattern #"(http|https):\/\/([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])"))
 
-(defn- url-from-link-when-rel= [rel link] ; TODO: Document that `link` is a strange tuple.
+(defn- url-from-link-when-rel=
+  "NOTE: only works with 'single line' Link headers, like:
+  Link: <https://pubsubhubbub.superfeedr.com/>; rel=\"hub\", <https://kylewm.com/>; rel=\"self\"
+
+  TODO: Make it work with separate Links."
+  [rel link]
   (let [rel-regex (re-pattern (str "rel=\"" rel "\""))]
     (when-let [target (some #(when (re-find rel-regex %) %) link)]
       (first (re-find url-regex target)))))
@@ -58,7 +63,7 @@
                   :form-params {"hub.mode"     "subscribe"
                                 "hub.topic"    self
                                 "hub.callback" (update-url)}}))
-                                        ; NOTE: We don't use uniqe callbacks, as any callback will trigger a complete feed rebuild. Could be something to change in the future.
+                                        ; NOTE: We don't use unique callbacks, as any callback will trigger a complete feed rebuild. Could be something to change in the future.
 
 (defn subscribe-to-websub-url
   "Start the machinery requride to subscribe to websub feed at `url`.
@@ -74,13 +79,14 @@
 (defn schedule-websub-re-subscription
   "Schedule a re-subscription to `topic` after `lease-seconds`."
   [lease-seconds topic]
-  (u/log :websub.resub/schedule :websub/topic topic :websub/lease-seconds lease-seconds)
-  (chime/chime-at [(Duration/ofSeconds lease-seconds)]
-                  (fn [_] (subscribe-to-websub-url topic))
-                  {:error-handler #(u/log :websub.resub/chime-fail
-                                          :websub/topic         topic
-                                          :websub/lease-seconds lease-seconds
-                                          :exception            %)}))
+  (let [lease (.. (Instant/now) (plusSeconds (parse-long lease-seconds)))]
+    (u/log :websub.resub/schedule :websub/topic topic :websub/lease lease)
+    (chime/chime-at [lease]
+                    (fn [_] (subscribe-to-websub-url topic))
+                    {:error-handler #(u/log :websub.resub/chime-fail
+                                            :websub/topic topic
+                                            :websub/lease lease
+                                            :exception    %)})))
 
 (defn handle-verification
   "Ring handler that respons do the final websub verification.
@@ -89,7 +95,7 @@
   [{{challenge     "hub.challenge"
      mode          "hub.mode"
      topic         "hub.topic"
-     lease-seconds "hub.lease_seconds"} :query-params ; TODO: Re-subscribe after the lease-seconds have passed
+     lease-seconds "hub.lease_seconds"} :query-params
     :as response}]
   (cond (not= mode "subscribe")
         (do (u/log :websub.verification/fail
@@ -115,18 +121,18 @@
   "Return Link header to broadcast websub avaliability of feed."
   []
   (let [hub (config/get-in [:config/websub :hub])]
-    (str "<" hub ">; rel=\"hub\", <" (feed-url) ">; rel=\"self\"")))
+    (str "<" hub ">; rel=\"hub\", <" (topic) ">; rel=\"self\"")))
 
 (defn notify-hub-of-update []
   (let [hub (config/get-in [:config/websub :hub])]
     (http/post hub {:form-params {"hub.mode" "publish"
-                                  "hub.url"  (feed-url)}})))
+                                  "hub.url"  (topic)}})))
 
 (defn handle-update-request
   "Ring handler that responds to a POST to the `route-name`."
   [{{:strs [rel=self rel=hub referer]} :headers}]
   (u/log :websub.update/requested :websub/referer referer :websub/self rel=self :websub/hub rel=hub)
-  
+
   ;; NOTE: `handle-update-request` is the only place in the websub
   ;; version that re-assembles the feed, so I don't think we
   ;; need to update the hub anywhere else.
@@ -136,32 +142,24 @@
   (u/log :websub.update/success)
   {:status 204})
 
+;; There is no real "state" here per say.
+;; However, I found that most WebSub hubs don't listen 
+;; before you send them an inital update. So... we do that.
+;; It might lead to some false positives, but I think that
+;; most podcast apps will deal?
+;; – LLA 230317
+(mount/defstate websub
+  :start #(when (config/get-in [:config/websub])
+            (notify-hub-of-update)))
+
 (comment
 
-  (def feed "https://pod.alltatalla.se/@omvarldar/feed.xml")
+  ;; Test subscriptions using websub.rocks: https://websub.rocks/subscriber/100
+  (subscribe-to-websub-url "https://websub.rocks/blog/100/kstyerUQfglvXL7ZwhNK")
 
-  (def response
-    (send-websub-discovery-request "https://websub.rocks/blog/100/OG1K9MR08qfMX0XJI25j"))
+  ;; Test publishing using websub.rocks: https://websub.rocks/publisher
+  (notify-hub-of-update)
 
-  (require '[clojure.inspector :as i])
-  (i/inspect response)
-
-  (websub-discovery-link response)
-
-  (def r2
-    (-> response
-
-        send-websub-subscription-request))
-
-  (send-websub-subscription-request "https://websub.rocks/blog/100/OG1K9MR08qfMX0XJI25j")
-
-  (keys response)
-  (:headers response)
-
-  (def r (http/get "https://websub.rocks/blog/100/OG1K9MR08qfMX0XJI25j"))
-
-
-
-  (-> r :headers (get "link"))
+  "https://3a33-176-10-230-222.eu.ngrok.io/feed/podcast"
 
   :comment)

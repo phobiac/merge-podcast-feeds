@@ -17,9 +17,9 @@
       {:name :podcast/feed
        :doc  "The primary route serving the merged podcast feed."
        :get  (fn [_]
-               {:status 200
-                :body   (podcast/web-feed)
-                :headers {"link" websub/link-header}})}]
+               {:status  200
+                :body    (podcast/web-feed)
+                :headers {"link" (websub/link-header)}})}]
 
      [websub/route-name
       {:name :podcast/update

@@ -4,7 +4,8 @@
             [org.motform.merge-podcast-feeds.config  :as config]
             [org.motform.merge-podcast-feeds.logging :as logging]
             [org.motform.merge-podcast-feeds.podcast :as podcast]
-            [org.motform.merge-podcast-feeds.server])
+            [org.motform.merge-podcast-feeds.server]
+            [org.motform.merge-podcast-feeds.websub])
   (:gen-class))
 
 

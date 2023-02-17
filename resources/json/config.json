@@ -1,6 +1,6 @@
 {
 	"poll-rate-in-seconds": 600,
-	"host-url": "https://pod.alltatalla.se",
+	"host-url": "https://c2a7-176-10-230-222.eu.ngrok.io",
 	"port": 8090,
 	"slug": "/feed/podcast",
 	"xml-file-path": "resources/xml/test.xml",
@@ -8,7 +8,7 @@
 		"base-url": "https://pod.alltatalla.se"
 	},
 	"websub": {
-		"hub": "http://pubsubhubbub.superfeedr.com"
+		"hub": "https://pubsubhubbub.appspot.com/"
 	},
 	"logging": {
 		"loggers": [

@@ -34,8 +34,6 @@
                                  org.clojure/test.check    {:mvn/version "1.1.1"}}
                     :main-opts  ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]" "--socket" "nrepl-socket"]}
 
-           :server {:exec-fn   org.motform.merge-podcast-feeds.core/-main
-                    :exec-args {:config "resources/json/example_config.json"}}
+           :server {:exec-fn org.motform.merge-podcast-feeds.core/-main}
 
-           :test   {:exec-fn   org.motform.merge-podcast-feeds.core/output-test-xml
-                    :exec-args {:config "resources/json/example_config.json"}}}}
+           :test   {:exec-fn org.motform.merge-podcast-feeds.core/output-test-xml}}}
