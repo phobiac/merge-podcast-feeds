@@ -160,6 +160,4 @@
   ;; Test publishing using websub.rocks: https://websub.rocks/publisher
   (notify-hub-of-update)
 
-  "https://3a33-176-10-230-222.eu.ngrok.io/feed/podcast"
-
   :comment)

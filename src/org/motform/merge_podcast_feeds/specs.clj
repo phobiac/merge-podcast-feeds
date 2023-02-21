@@ -116,10 +116,10 @@
 (s/def :config/valid
   (s/keys :req [:config/metadata
                 :config/port
-                :config/slug]
+                :config/slug
+                :config/host-url]
           :opt [:config/castopod
                 :config/feeds
-                :config/host-url
                 :config/poll-rate-in-seconds
                 :config/xml-file-path
                 :config/logging
