@@ -16,7 +16,7 @@ continuously as a live web service. The program supports polling and
 basic WebSub and features some oddly specific Castopod integration.
 
 A single JSON configuration file controls the program at
-`resources/json/config.json`. It validates feed metadata against
+[`resources/json/config.json`](https://github.com/motform/merge-podcast-feeds/blob/main/resources/json/config.json). It validates feed metadata against
 [iTunes' required tags](https://help.apple.com/itc/podcasts_connect/#/itcb54353390).
 Individual episodes are _not_ validated as they are assumed to
 originate from a correct source. Configuration errors are reported, so
@@ -24,7 +24,7 @@ check that console!
 
 ## Usage
 
-Expects that you have a correctly formatted `resources/json/config.json`, see table below for options.
+Expects that you have a correctly formatted [`resources/json/config.json`](https://github.com/motform/merge-podcast-feeds/blob/main/resources/json/config.json), see table below for options.
 
 Assuming you have Clojure installed, you can run the command below to check your config generate a single-shot/test .xml.
 
