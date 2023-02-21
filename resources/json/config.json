@@ -1,12 +1,12 @@
 {
-	"poll-rate-in-seconds": 600,
-	"host-url": "https://c2a7-176-10-230-222.eu.ngrok.io",
+	"host-url": "https://example.com",
 	"port": 8090,
 	"slug": "/feed/podcast",
 	"xml-file-path": "resources/xml/test.xml",
-	"castopod": {
-		"base-url": "https://pod.alltatalla.se"
-	},
+	"feeds": [
+		"https://museapp.com/podcast.rss",
+		"https://www.omnycontent.com/d/playlist/c4157e60-c7f8-470d-b13f-a7b30040df73/564f493f-af32-4c48-862f-a7b300e4df49/ac317852-8807-44b8-8eff-a7b300e4df52/podcast.rss"
+	],
 	"websub": {
 		"hub": "https://pubsubhubbub.appspot.com/"
 	},
@@ -18,19 +18,19 @@
 		"file-path": "/tmp/merge-podcasts/test.log"
 	},
 	"metadata": {
-		"title": "Radio åt alla",
-		"link": "https://radio.alltatalla.se/",
-		"atom": "https://radio.alltatalla.se/feed/podcast", 
-		"description": "Spretig radio från Förbundet Allt åt alla",
-		"language": "sv-SE",
-		"copyright": "kopimi Allt åt alla",
+		"title": "Example merge podcast feed",
+		"link": "https://example.com",
+		"atom": "https://example.com/feed/podcast", 
+		"description": "An example merge podcast.",
+		"language": "en-US",
+		"copyright": "CC",
 		"image": {
-			"url": "https://radio.alltatalla.se/wp-content/uploads/2017/05/logo.png",
-			"title": "Radio åt alla",
-			"link": "https://radio.alltatalla.se/"
+			"url": "https://example.com/logo.png",
+			"title": "Example merge podcast feed",
+			"link": "https://example.com"
 		},
 		"itunes": {
-			"author": "Förbundet Allt åt alla",
+			"author": "Podcast merge",
 			"categories": [
 				["News", "Politics"],
 				["News", "News Commentary"],
@@ -40,15 +40,15 @@
 			],
 			"explicit": "false",
 			"image": {
-				"href": "https://radio.alltatalla.se/wp-content/uploads/2017/05/logo.png"
+				"href": "https://example.com/logo.png"
 			},
 			"owner": {
-				"name": "Radio åt alla",
-				"email": "web@alltatalla.se"
+				"name": "Podcast merge",
+				"email": "webmaster@example.com"
 			},
 			"type": "serial",
-			"subtitle": "Spretig radio från Förbundet Allt åt alla",
-			"summary": "Spretig radio från Förbundet Allt åt alla"
+			"subtitle": "Example merge podcast feed",
+			"summary": "Example merge podcast feed"
 		}
 	}
 }
